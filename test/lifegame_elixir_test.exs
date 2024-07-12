@@ -54,13 +54,12 @@ defmodule LifegameTest do
 
   test "std outputにworldを出力できる" do
     world = Lifegame.World.init(board: [{0, 0}, {1, 0}, {2, 2}], size: {3, 4})
-    world_string = Lifegame.World.to_string(world)
+    world_string = to_string(world)
     assert world_string == "110\n000\n001\n000"
-
 
     board = [{1, 0}, {2, 1}, {0, 2}, {1, 2}, {2, 2}]
     world = Lifegame.World.init(board: board, size: {3, 3})
-    world_string = Lifegame.World.to_string(world)
+    world_string = to_string(world)
     assert world_string == "010\n001\n111"
   end
 

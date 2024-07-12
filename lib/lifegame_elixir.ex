@@ -61,23 +61,6 @@ defmodule Lifegame.World do
     %{world | board: new_board, dead_board: dead_board}
   end
 
-  def to_string(world) do
-    {size_x, size_y} = world.size
-    init_list = 1..size_y |> Enum.map(fn y ->
-      Enum.to_list(1..size_x) |> Enum.map(fn _ -> 0 end)
-    end)
-
-    world.board
-    |> Enum.reduce(init_list, fn {x, y}, acc ->
-      old_x_list = Enum.at(acc, y)
-      new_x_list = List.replace_at(old_x_list, x, 1)
-      List.replace_at(acc, y, new_x_list)
-    end)
-    |> Enum.map(fn x -> Enum.join(x) end)
-    |> Enum.reduce(fn x, acc -> acc <> "\n" <> x end)
-
-  end
-
   defp neighborhood({x, y}) do
     [
       {x-1, y-1}, {x, y-1}, {x+1, y-1},
@@ -107,6 +90,25 @@ defmodule Lifegame.World do
   end
 end
 
+defimpl String.Chars, for: Lifegame.World do
+  def to_string(world) do
+    {size_x, size_y} = world.size
+    init_list = 1..size_y |> Enum.map(fn y ->
+      Enum.to_list(1..size_x) |> Enum.map(fn _ -> 0 end)
+    end)
+
+    world.board
+    |> Enum.reduce(init_list, fn {x, y}, acc ->
+      old_x_list = Enum.at(acc, y)
+      new_x_list = List.replace_at(old_x_list, x, 1)
+      List.replace_at(acc, y, new_x_list)
+    end)
+    |> Enum.map(fn x -> Enum.join(x) end)
+    |> Enum.reduce(fn x, acc -> acc <> "\n" <> x end)
+
+  end
+end
+
 defmodule Lifegame do
   alias Lifegame.World
 
@@ -118,10 +120,10 @@ defmodule Lifegame do
   end
 
   defp run(world, i) when i > 10 do
-    IO.puts(World.to_string(world))
+    IO.puts(to_string(world))
   end
   defp run(world, i) do
-    IO.puts(World.to_string(world))
+    IO.puts(to_string(world))
     IO.puts("----------")
     run(World.generation(world), i+1)
   end
